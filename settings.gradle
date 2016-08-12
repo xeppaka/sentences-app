@@ -1,0 +1,4 @@
+rootProject.name = 'sentence-app'
+include 'rest'
+include 'sentence'
+include 'server'

@@ -4,35 +4,38 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.xeppaka.sentence.words.Word.WordCategory;
 
+import java.util.Arrays;
+
 /**
  *
  */
-public class WordInCategoryTest {
+public class CategorizedWordTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCharsCannotBeNull() {
-        new WordInCategory(null, WordCategory.NOUN);
+        new CategorizedWord(null, WordCategory.NOUN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCharsCannotBeNullWithId() {
-        new WordInCategory(0, null, WordCategory.NOUN);
+        new CategorizedWord(0, null, WordCategory.NOUN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWordCategotyCannotBeNull() {
-        new WordInCategory("Lexico", null);
+        new CategorizedWord("Lexico", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWordCategotyCannotBeNullWithId() {
-        new WordInCategory(0, "Lexico", null);
+        new CategorizedWord(0, "Lexico", null);
     }
 
     public void testConstructorSetsValues() {
-        final Word word = new WordInCategory(20, "Eubicor", WordCategory.VERB);
+        final Word word = new CategorizedWord(20, "Eubicor", WordCategory.VERB, WordCategory.NOUN);
 
         Assert.assertEquals(20, word.getId());
         Assert.assertEquals("Eubicor", word.getChars());
-        Assert.assertEquals(WordCategory.VERB, word.getCategory());
+        Assert.assertEquals(2, word.categoriesCount());
+        Assert.assertTrue(word.getCategories().containsAll(Arrays.asList(WordCategory.VERB, WordCategory.NOUN)));
     }
 }

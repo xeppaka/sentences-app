@@ -14,4 +14,5 @@ public interface Word extends Entity {
 
     String getChars();
     WordCategory getCategory();
+    void merge(Word other);
 }

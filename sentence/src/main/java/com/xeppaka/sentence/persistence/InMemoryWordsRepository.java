@@ -19,7 +19,8 @@ public class InMemoryWordsRepository implements WordsRepository {
     private static AtomicLong nextId = new AtomicLong();
 
     private Map<Long, Word> wordsById = new HashMap<>();
-    private Map<String, Word> wordsByChars = new HashMap<>();
+    // helper for quick search over word value
+    private Map<String, Long> idsByChars = new HashMap<>();
 
     @Override
     public <S extends Word> S save(S entity) {
@@ -27,9 +28,20 @@ public class InMemoryWordsRepository implements WordsRepository {
             throw new IllegalArgumentException("entity must not be null.");
         }
 
-        final long id = nextId.getAndIncrement();
+        final Long wordIdInDb = idsByChars.get(entity.getChars());
+
+        if (wordIdInDb != null) {
+            final Word wordInDb = wordsById.get(wordIdInDb);
+            wordInDb.merge(entity);
+
+            return wordInDb;
+        } else {
+            final long id = nextId.getAndIncrement();
+            entity.setId(id);
+        }
+
         wordsById.put(id, entity);
-        wordsByChars.put(entity.getChars(), entity);
+        idsByChars.put(entity.getChars(), id);
 
         return entity;
     }
@@ -51,15 +63,11 @@ public class InMemoryWordsRepository implements WordsRepository {
 
     @Override
     public Word findOne(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null.");
-        }
-
-        return wordsById.get(id);
+        throw new UnsupportedOperationException("findOne by id is not supported.");
     }
 
     @Override
-    public Word findByChars(String chars) {
+    public Word findWord(String chars) {
         if (chars == null || chars.isEmpty()) {
             throw new IllegalArgumentException("chars must not be null or empty.");
         }

@@ -20,7 +20,7 @@ public class WordsService {
     }
 
     public Word getWord(String chars) throws WordNotFoundException {
-        final Word result = wordsRepository.findByChars(chars);
+        final Word result = wordsRepository.findWord(chars);
 
         if (result == null) {
             throw new WordNotFoundException();

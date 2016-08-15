@@ -1,6 +1,7 @@
 package com.xeppaka.sentence.words;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.xeppaka.sentence.words.Word.WordCategory;
 
 /**
  *

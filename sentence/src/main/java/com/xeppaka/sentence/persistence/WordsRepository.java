@@ -11,7 +11,5 @@ import java.util.List;
 public interface WordsRepository extends CrudRepository<Word, Long> {
     @Override
     List<Word> findAll();
-    @Override
-    List<Word> findAll(Iterable<Long> longs);
-    Word findByChars(String chars);
+    Word findWord(String chars);
 }

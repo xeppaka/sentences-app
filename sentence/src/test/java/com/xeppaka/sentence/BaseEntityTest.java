@@ -1,6 +1,5 @@
 package com.xeppaka.sentence;
 
-import com.xeppaka.sentence.BaseEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +16,13 @@ public class BaseEntityTest {
     }
 
     @Test
-    public void testInitialStateIsUndefinedNotAttached() {
-        Assert.assertEquals(Entity.ID_UNDEFINED, baseEntity.getId());
-        Assert.assertFalse(baseEntity.isAttached());
+    public void testInitialStateIdIsUndefined() {
+        Assert.assertFalse(baseEntity.hasId());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testInitialStateIdIsNotGettable() {
+        baseEntity.getId();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -41,13 +44,11 @@ public class BaseEntityTest {
     public void testIdIsSettable() {
         baseEntity.setId(0);
         Assert.assertEquals(0, baseEntity.getId());
-        Assert.assertTrue(baseEntity.isAttached());
     }
 
     @Test
     public void testIdIsSettableMax() {
         baseEntity.setId(Long.MAX_VALUE);
         Assert.assertEquals(Long.MAX_VALUE, baseEntity.getId());
-        Assert.assertTrue(baseEntity.isAttached());
     }
 }

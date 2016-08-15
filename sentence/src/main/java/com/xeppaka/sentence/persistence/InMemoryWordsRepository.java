@@ -28,20 +28,15 @@ public class InMemoryWordsRepository implements WordsRepository {
             throw new IllegalArgumentException("entity must not be null.");
         }
 
-        final Long wordIdInDb = idsByChars.get(entity.getChars());
-
-        if (wordIdInDb != null) {
-            final Word wordInDb = wordsById.get(wordIdInDb);
-            wordInDb.merge(entity);
-
-            return wordInDb;
-        } else {
-            final long id = nextId.getAndIncrement();
-            entity.setId(id);
+        final String chars = entity.getChars().toLowerCase();
+        Long idInDb = idsByChars.get(chars);
+        if (idInDb == null) {
+            idInDb = nextId.getAndIncrement();
         }
 
-        wordsById.put(id, entity);
-        idsByChars.put(entity.getChars(), id);
+        entity.setId(idInDb);
+        idsByChars.put(chars, idInDb);
+        wordsById.put(idInDb, entity);
 
         return entity;
     }
@@ -63,7 +58,7 @@ public class InMemoryWordsRepository implements WordsRepository {
 
     @Override
     public Word findOne(Long id) {
-        throw new UnsupportedOperationException("findOne by id is not supported.");
+        return wordsById.get(id);
     }
 
     @Override
@@ -72,7 +67,12 @@ public class InMemoryWordsRepository implements WordsRepository {
             throw new IllegalArgumentException("chars must not be null or empty.");
         }
 
-        return wordsByChars.get(chars);
+        final Long id = idsByChars.get(chars.toLowerCase());
+        if (id != null) {
+            return wordsById.get(id);
+        }
+
+        return null;
     }
 
     @Override
@@ -120,13 +120,10 @@ public class InMemoryWordsRepository implements WordsRepository {
             throw new IllegalArgumentException("id must not be null.");
         }
 
-        final Word deleteWord = wordsById.get(id);
-
+        final Word deleteWord = wordsById.remove(id);
         if (deleteWord != null) {
-            wordsByChars.remove(deleteWord.getChars());
+            idsByChars.remove(deleteWord.getChars());
         }
-
-        wordsById.remove(id);
     }
 
     @Override
@@ -152,6 +149,6 @@ public class InMemoryWordsRepository implements WordsRepository {
     @Override
     public void deleteAll() {
         wordsById.clear();
-        wordsByChars.clear();
+        idsByChars.clear();
     }
 }

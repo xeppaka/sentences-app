@@ -1,24 +1,20 @@
-package com.xeppaka.sentence;
+package com.xeppaka.sentence.domain;
 
 /**
  *
  */
-public abstract class BaseEntity implements Entity {
+public abstract class BaseEntity extends AssertionConcern implements Entity {
     private long id = ID_UNDEFINED;
 
     @Override
     public long getId() {
-        if (!hasId()) {
-            throw new IllegalStateException("There is no id assigned.");
-        }
+        assertStateTrue(hasId(), "There is no id assigned.");
 
         return id;
     }
 
     public void setId(long id) {
-        if (id < 0) {
-            throw new IllegalArgumentException("id must be positive.");
-        }
+        assertArgumentRange(id, 0, Long.MAX_VALUE, "id must be positive.");
 
         this.id = id;
     }
@@ -42,7 +38,6 @@ public abstract class BaseEntity implements Entity {
         BaseEntity that = (BaseEntity) o;
 
         return id == that.id;
-
     }
 
     @Override

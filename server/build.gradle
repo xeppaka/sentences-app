@@ -29,4 +29,5 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-security'
 
     compile project(':sentence')
+    compile project(':rest')
 }

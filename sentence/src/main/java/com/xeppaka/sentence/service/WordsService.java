@@ -1,7 +1,7 @@
 package com.xeppaka.sentence.service;
 
 import com.xeppaka.sentence.persistence.WordsRepository;
-import com.xeppaka.sentence.words.Word;
+import com.xeppaka.sentence.domain.words.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

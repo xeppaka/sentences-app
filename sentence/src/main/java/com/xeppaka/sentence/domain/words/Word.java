@@ -1,6 +1,6 @@
-package com.xeppaka.sentence.words;
+package com.xeppaka.sentence.domain.words;
 
-import com.xeppaka.sentence.Entity;
+import com.xeppaka.sentence.domain.Entity;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package com.xeppaka.sentence;
+package com.xeppaka.sentence.domain;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,7 +41,7 @@ public class BaseEntityTest {
     }
 
     @Test
-    public void testIdIsSettable() {
+    public void testIdIsSettableMin() {
         baseEntity.setId(0);
         Assert.assertEquals(0, baseEntity.getId());
     }

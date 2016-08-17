@@ -1,4 +1,4 @@
-package com.xeppaka.sentence.words;
+package com.xeppaka.sentence.domain.words;
 
 import com.xeppaka.sentence.service.WordsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +18,9 @@ public class WordsController {
     private WordsService wordsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<UiWord> getAllWords() {
+    public List<WordDto> getAllWords() {
         final List<Word> words = wordsService.getWords();
 
-        return words.stream().map(UiWord::new).collect(Collectors.toList());
+        return words.stream().map(WordDto::new).collect(Collectors.toList());
     }
 }

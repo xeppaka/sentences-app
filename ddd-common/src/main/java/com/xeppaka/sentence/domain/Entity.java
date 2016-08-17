@@ -1,4 +1,4 @@
-package com.xeppaka.sentence;
+package com.xeppaka.sentence.domain;
 
 public interface Entity {
     long ID_UNDEFINED = -1;

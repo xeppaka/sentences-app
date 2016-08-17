@@ -1,10 +1,10 @@
 package com.xeppaka.sentence.persistence;
 
-import com.xeppaka.sentence.words.Word;
+import com.xeppaka.sentence.domain.AssertionConcern;
+import com.xeppaka.sentence.domain.words.Word;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  */
 @Repository
-public class InMemoryWordsRepository implements WordsRepository {
+public class InMemoryWordsRepository extends AssertionConcern implements WordsRepository {
     private static AtomicLong nextId = new AtomicLong();
 
     private Map<Long, Word> wordsById = new HashMap<>();
@@ -23,10 +23,8 @@ public class InMemoryWordsRepository implements WordsRepository {
     private Map<String, Long> idsByChars = new HashMap<>();
 
     @Override
-    public <S extends Word> S save(S entity) {
-        if (entity == null) {
-            throw new IllegalArgumentException("entity must not be null.");
-        }
+    public synchronized <S extends Word> S save(S entity) {
+        assertArgumentNotNull(entity, "entity must not be null.");
 
         final String chars = entity.getChars().toLowerCase();
         Long idInDb = idsByChars.get(chars);
@@ -42,10 +40,8 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public <S extends Word> List<S> save(Iterable<S> entities) {
-        if (entities == null) {
-            throw new IllegalArgumentException("entities must not be null.");
-        }
+    public synchronized <S extends Word> List<S> save(Iterable<S> entities) {
+        assertArgumentNotNull(entities, "entities must not be null.");
 
         final List<S> result = new ArrayList<>();
 
@@ -57,15 +53,13 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public Word findOne(Long id) {
+    public synchronized Word findOne(Long id) {
         return wordsById.get(id);
     }
 
     @Override
-    public Word findWord(String chars) {
-        if (chars == null || chars.isEmpty()) {
-            throw new IllegalArgumentException("chars must not be null or empty.");
-        }
+    public synchronized Word findWord(String chars) {
+        assertArgumentNotEmpty(chars, "chars must not be null or empty.");
 
         final Long id = idsByChars.get(chars.toLowerCase());
         if (id != null) {
@@ -76,24 +70,20 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public boolean exists(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null.");
-        }
+    public synchronized boolean exists(Long id) {
+        assertArgumentNotNull(id, "id must not be null.");
 
         return wordsById.containsKey(id);
     }
 
     @Override
-    public List<Word> findAll() {
+    public synchronized List<Word> findAll() {
         return new ArrayList<>(wordsById.values());
     }
 
     @Override
-    public List<Word> findAll(Iterable<Long> ids) {
-        if (ids == null) {
-            throw new IllegalArgumentException("ids must not be null.");
-        }
+    public synchronized List<Word> findAll(Iterable<Long> ids) {
+        assertArgumentNotNull(ids, "ids must not be null.");
 
         final List<Word> result = new ArrayList<>();
 
@@ -110,15 +100,13 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public long count() {
+    public synchronized long count() {
         return wordsById.size();
     }
 
     @Override
-    public void delete(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null.");
-        }
+    public synchronized void delete(Long id) {
+        assertArgumentNotNull(id, "id must not be null.");
 
         final Word deleteWord = wordsById.remove(id);
         if (deleteWord != null) {
@@ -127,19 +115,18 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public void delete(Word word) {
-        if (word == null) {
-            throw new IllegalArgumentException("word must not be null.");
-        }
+    public synchronized void delete(Word word) {
+        assertArgumentNotNull(word, "word must not be null.");
 
-        delete(word.getId());
+        final Long wordId = idsByChars.get(word.getChars());
+        if (wordId != null) {
+            delete(wordId);
+        }
     }
 
     @Override
-    public void delete(Iterable<? extends Word> words) {
-        if (words == null) {
-            throw new IllegalArgumentException("words must not be null.");
-        }
+    public synchronized void delete(Iterable<? extends Word> words) {
+        assertArgumentNotNull(words, "words must not be null.");
 
         for (Word word : words) {
             delete(word);
@@ -147,7 +134,7 @@ public class InMemoryWordsRepository implements WordsRepository {
     }
 
     @Override
-    public void deleteAll() {
+    public synchronized void deleteAll() {
         wordsById.clear();
         idsByChars.clear();
     }

@@ -1,4 +1,5 @@
 rootProject.name = 'sentence-app'
+include 'ddd-common'
 include 'rest'
 include 'sentence'
 include 'server'

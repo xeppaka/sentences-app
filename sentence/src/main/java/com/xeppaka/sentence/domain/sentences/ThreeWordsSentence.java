@@ -1,6 +1,6 @@
-package com.xeppaka.sentence.sentences;
+package com.xeppaka.sentence.domain.sentences;
 
-import com.xeppaka.sentence.words.Word;
+import com.xeppaka.sentence.domain.words.Word;
 
 import java.text.MessageFormat;
 
@@ -36,19 +36,16 @@ public class ThreeWordsSentence implements Sentence {
 
     @Override
     public Word getWord(int index) {
-        if (index == 0) {
-            return firstWord;
+        switch (index) {
+            case 0:
+                return firstWord;
+            case 1:
+                return secondWord;
+            case 2:
+                return thirdWord;
+            default:
+                throw new IndexOutOfBoundsException(MessageFormat.format("There is no word with index {0} in the sentence.", index));
         }
-
-        if (index == 1) {
-            return secondWord;
-        }
-
-        if (index == 2) {
-            return thirdWord;
-        }
-
-        throw new IndexOutOfBoundsException(MessageFormat.format("There is no word with index {0} in the sentence.", index));
     }
 
     @Override

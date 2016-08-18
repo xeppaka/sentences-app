@@ -1,11 +1,10 @@
-package com.xeppaka.sentence.domain.words;
+package com.xeppaka.sentence.domain.word;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.xeppaka.sentence.domain.words.Word.WordCategory;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,13 +13,15 @@ import java.util.Set;
 @JsonRootName(value = "word")
 public class WordDto {
     private String word;
-    private Set<WordCategory> wordCategory;
+    private Set<WordCategory> wordCategories;
 
-    public WordDto(String word, Collection<WordCategory> wordCategory) {
-        validate(word, wordCategory);
+    private WordDto() { }
+
+    public WordDto(String word, Collection<WordCategory> wordCategories) {
+        validate(word, wordCategories);
 
         this.word = word;
-        this.wordCategory = EnumSet.copyOf(wordCategory);
+        this.wordCategories = EnumSet.copyOf(wordCategories);
     }
 
     public WordDto(Word word) {
@@ -31,8 +32,8 @@ public class WordDto {
         return word;
     }
 
-    public Set<WordCategory> getWordCategory() {
-        return wordCategory;
+    public Set<WordCategory> getWordCategories() {
+        return wordCategories;
     }
 
     private void validate(String word, Collection<WordCategory> wordCategory) {
@@ -41,7 +42,7 @@ public class WordDto {
         }
 
         if (wordCategory == null) {
-            throw new IllegalArgumentException("wordCategory must not be null.");
+            throw new IllegalArgumentException("wordCategories must not be null.");
         }
     }
 }

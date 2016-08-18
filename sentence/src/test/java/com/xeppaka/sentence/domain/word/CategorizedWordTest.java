@@ -1,12 +1,11 @@
-package com.xeppaka.sentence.domain.words;
+package com.xeppaka.sentence.domain.word;
 
 import org.junit.Assert;
 import org.junit.Test;
-import com.xeppaka.sentence.domain.words.Word.WordCategory;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashMap;
 
 /**
  *

@@ -1,17 +1,18 @@
-package com.xeppaka.sentence.domain.words;
+package com.xeppaka.sentence.domain.word;
 
 import com.xeppaka.sentence.domain.BaseEntity;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
 /**
- *
+ * Default implementation of {@link Word} interface.
  */
 public class CategorizedWord extends BaseEntity implements Word {
     private String chars;
-    private Set<WordCategory> categories = EnumSet.noneOf(WordCategory.class);
+    private Set<WordCategory> categories = Collections.synchronizedSet(EnumSet.noneOf(WordCategory.class));
 
     public CategorizedWord(String chars, WordCategory... categories) {
         assertArgumentNotEmpty(chars, "chars must not be null or empty.");

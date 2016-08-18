@@ -1,11 +1,11 @@
 package com.xeppaka.sentence.persistence;
 
 import com.xeppaka.sentence.domain.AssertionConcern;
-import com.xeppaka.sentence.domain.words.Word;
+import com.xeppaka.sentence.domain.word.Word;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,37 +16,37 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Repository
 public class InMemoryWordsRepository extends AssertionConcern implements WordsRepository {
-    private static AtomicLong nextId = new AtomicLong();
+    private static final AtomicLong nextId = new AtomicLong();
 
-    private Map<Long, Word> wordsById = new HashMap<>();
+    private final Map<Long, Word> wordsById = new HashMap<>();
     // helper for quick search over word value
-    private Map<String, Long> idsByChars = new HashMap<>();
+    private final Map<String, Long> idsByChars = new HashMap<>();
 
     @Override
-    public synchronized <S extends Word> S save(S entity) {
-        assertArgumentNotNull(entity, "entity must not be null.");
+    public synchronized <S extends Word> S save(S word) {
+        assertArgumentNotNull(word, "word must not be null.");
 
-        final String chars = entity.getChars().toLowerCase();
+        final String chars = word.getChars().toLowerCase();
         Long idInDb = idsByChars.get(chars);
         if (idInDb == null) {
             idInDb = nextId.getAndIncrement();
         }
 
-        entity.setId(idInDb);
+        word.setId(idInDb);
         idsByChars.put(chars, idInDb);
-        wordsById.put(idInDb, entity);
+        wordsById.put(idInDb, word);
 
-        return entity;
+        return word;
     }
 
     @Override
-    public synchronized <S extends Word> List<S> save(Iterable<S> entities) {
-        assertArgumentNotNull(entities, "entities must not be null.");
+    public synchronized <S extends Word> List<S> save(Iterable<S> words) {
+        assertArgumentNotNull(words, "words must not be null.");
 
         final List<S> result = new ArrayList<>();
 
-        for (S entity : entities) {
-            result.add(save(entity));
+        for (S word : words) {
+            result.add(save(word));
         }
 
         return result;
@@ -54,6 +54,8 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
 
     @Override
     public synchronized Word findOne(Long id) {
+        assertArgumentNotNull(id, "id must not be null.");
+
         return wordsById.get(id);
     }
 
@@ -66,6 +68,11 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
             return wordsById.get(id);
         }
 
+        return null;
+    }
+
+    @Override
+    public Word findRandomWordForCategory(WordCategory wordCategory) {
         return null;
     }
 
@@ -126,7 +133,7 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
 
     @Override
     public synchronized void delete(Iterable<? extends Word> words) {
-        assertArgumentNotNull(words, "words must not be null.");
+        assertArgumentNotNull(words, "word must not be null.");
 
         for (Word word : words) {
             delete(word);

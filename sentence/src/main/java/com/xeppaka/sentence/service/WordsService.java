@@ -1,7 +1,9 @@
 package com.xeppaka.sentence.service;
 
+import com.xeppaka.sentence.domain.word.CategorizedWord;
 import com.xeppaka.sentence.persistence.WordsRepository;
-import com.xeppaka.sentence.domain.words.Word;
+import com.xeppaka.sentence.domain.word.Word;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +17,21 @@ public class WordsService {
     @Autowired
     private WordsRepository wordsRepository;
 
-    public List<Word> getWords() {
+    public List<Word> findAllWords() {
         return wordsRepository.findAll();
     }
 
-    public Word getWord(String chars) throws WordNotFoundException {
+    public Word findWord(String chars) throws WordNotFoundException {
         final Word result = wordsRepository.findWord(chars);
 
         if (result == null) {
-            throw new WordNotFoundException();
+            throw new WordNotFoundException(chars);
         }
 
         return result;
     }
 
-    public Word saveWord(Word word) {
-        return wordsRepository.save(word);
+    public Word saveWord(String chars, WordCategory... categories) {
+        return wordsRepository.save(new CategorizedWord(chars, categories));
     }
 }

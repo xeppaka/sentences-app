@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.persistence;
 
-import com.xeppaka.sentence.domain.words.CategorizedWord;
-import com.xeppaka.sentence.domain.words.Word;
-import com.xeppaka.sentence.domain.words.Word.WordCategory;
+import com.xeppaka.sentence.domain.word.CategorizedWord;
+import com.xeppaka.sentence.domain.word.Word;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

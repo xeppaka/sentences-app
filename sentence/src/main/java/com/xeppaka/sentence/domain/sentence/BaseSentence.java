@@ -37,7 +37,7 @@ public abstract class BaseSentence extends BaseEntity implements Sentence {
                 sb.append(' ');
             }
 
-            sb.append(getWord(i));
+            sb.append(getWord(i).getChars());
         }
 
         return sb.toString();

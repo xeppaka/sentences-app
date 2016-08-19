@@ -32,7 +32,8 @@ public class SentencesService {
     }
 
     public Sentence generateHumanSentence() throws NotEnoughWordsException {
-        return humanSentenceGenerator.generate();
+        final Sentence sentence = humanSentenceGenerator.generate();
+        return sentencesRepository.save(sentence);
     }
 
     public Sentence findSentence(long sentenceId) throws SentenceNotFoundException {

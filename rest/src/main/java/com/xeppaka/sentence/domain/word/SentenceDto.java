@@ -32,4 +32,16 @@ public class SentenceDto {
     public SentenceDto(Sentence sentence) {
         this(sentence.getId(), sentence.getText(), sentence.getViewCount());
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public int getShowDisplayCount() {
+        return showDisplayCount;
+    }
 }

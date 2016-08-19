@@ -2,7 +2,6 @@ package com.xeppaka.sentence.domain.sentence;
 
 import com.xeppaka.sentence.domain.word.CategorizedWord;
 import com.xeppaka.sentence.domain.word.Word;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,44 +9,44 @@ import org.junit.Test;
 /**
  *
  */
-public class HumanSentenceTest {
+public class YodaThreeWordsSentenceTest {
     private Word noun;
     private Word verb;
     private Word objective;
 
     @Before
     public void setUp() {
-        verb = new CategorizedWord("Dell", WordCategory.VERB);
-        noun = new CategorizedWord("Lenovo", WordCategory.NOUN);
-        objective = new CategorizedWord("Gigabyte", WordCategory.OBJECTIVE);
+        verb = new CategorizedWord("Dell", Word.WordCategory.VERB);
+        noun = new CategorizedWord("Lenovo", Word.WordCategory.NOUN);
+        objective = new CategorizedWord("Gigabyte", Word.WordCategory.OBJECTIVE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWordsCategoriesSequenceInConstructor1() {
-        new HumanSentence(verb, verb, objective);
+        new YodaThreeWordsSentence(verb, noun, verb);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWordsCategoriesSequenceInConstructor2() {
-        new HumanSentence(noun, noun, objective);
+        new YodaThreeWordsSentence(objective, verb, verb);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWordsCategoriesSequenceInConstructor3() {
-        new HumanSentence(noun, verb, verb);
+        new YodaThreeWordsSentence(objective, noun, noun);
     }
 
     @Test
     public void testProperConstructor() {
-        final Sentence sentence = new HumanSentence(noun, verb, objective);
-        Assert.assertEquals(noun, sentence.getWord(0));
-        Assert.assertEquals(verb, sentence.getWord(1));
-        Assert.assertEquals(objective, sentence.getWord(2));
+        final Sentence sentence = new YodaThreeWordsSentence(objective, noun, verb);
+        Assert.assertEquals(objective, sentence.getWord(0));
+        Assert.assertEquals(noun, sentence.getWord(1));
+        Assert.assertEquals(verb, sentence.getWord(2));
     }
 
     @Test
     public void testToYodaSentenceConversion() {
-        final Sentence sentence = new HumanSentence(noun, verb, objective);
+        final Sentence sentence = new YodaThreeWordsSentence(objective, noun, verb);
         final Sentence yodaSentence = sentence.toYodaSentence();
 
         Assert.assertEquals(objective, yodaSentence.getWord(0));

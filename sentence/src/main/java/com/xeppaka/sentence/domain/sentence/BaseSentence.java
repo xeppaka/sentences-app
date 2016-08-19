@@ -26,4 +26,20 @@ public abstract class BaseSentence extends BaseEntity implements Sentence {
     public int increaseViewCount() {
         return ++viewCount;
     }
+
+    @Override
+    public String getText() {
+        final StringBuilder sb = new StringBuilder();
+        final int words = wordCount();
+
+        for (int i = 0; i < words; ++i) {
+            if (i > 0) {
+                sb.append(' ');
+            }
+
+            sb.append(getWord(i));
+        }
+
+        return sb.toString();
+    }
 }

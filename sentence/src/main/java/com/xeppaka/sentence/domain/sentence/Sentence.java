@@ -29,4 +29,6 @@ public interface Sentence extends Entity {
     int increaseViewCount();
 
     Sentence toYodaSentence();
+
+    String getText();
 }

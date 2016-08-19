@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.domain.word;
 
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.junit.Assert;
 import org.junit.Test;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
 
 import java.util.Arrays;
 import java.util.EnumSet;

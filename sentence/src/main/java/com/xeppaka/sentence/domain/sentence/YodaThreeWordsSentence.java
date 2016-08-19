@@ -5,8 +5,8 @@ import com.xeppaka.sentence.domain.word.Word;
 /**
  *
  */
-public class YodaSentence extends ThreeWordsSentence {
-    public YodaSentence(Word firstWord, Word secondWord, Word thirdWord) {
+public class YodaThreeWordsSentence extends ThreeWordsSentence {
+    public YodaThreeWordsSentence(Word firstWord, Word secondWord, Word thirdWord) {
         super(firstWord, secondWord, thirdWord);
 
         if (!firstWord.getCategories().contains(Word.WordCategory.OBJECTIVE)) {
@@ -23,7 +23,7 @@ public class YodaSentence extends ThreeWordsSentence {
     }
 
     @Override
-    public YodaSentence toYodaSentence() {
+    public YodaThreeWordsSentence toYodaSentence() {
         return this;
     }
 }

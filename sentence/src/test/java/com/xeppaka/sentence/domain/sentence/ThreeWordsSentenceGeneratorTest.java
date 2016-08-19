@@ -1,5 +1,6 @@
 package com.xeppaka.sentence.domain.sentence;
 
+import com.xeppaka.sentence.domain.sentence.exceptions.NotEnoughWordsException;
 import com.xeppaka.sentence.domain.word.CategorizedWord;
 import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import org.junit.Test;
  *
  */
 public class ThreeWordsSentenceGeneratorTest {
-    private RandomWordsSource sameWordSource;
+    private RandomWordsProvider sameWordSource;
 
     @Before
     public void setUp() {
@@ -38,7 +39,7 @@ public class ThreeWordsSentenceGeneratorTest {
     }
 
     @Test
-    public void testSentenceGeneratedWithProvidedCategory() {
+    public void testSentenceGeneratedWithProvidedCategory() throws NotEnoughWordsException {
         final SentenceGenerator sentenceGenerator = new ThreeWordsSentenceGenerator(WordCategory.OBJECTIVE, WordCategory.NOUN, WordCategory.VERB, sameWordSource);
         final Sentence sentence = sentenceGenerator.generate();
 
@@ -49,7 +50,7 @@ public class ThreeWordsSentenceGeneratorTest {
     }
 
     @Test
-    public void testSentenceGeneratedWithSameCategory() {
+    public void testSentenceGeneratedWithSameCategory() throws NotEnoughWordsException {
         final SentenceGenerator sentenceGenerator = new ThreeWordsSentenceGenerator(WordCategory.OBJECTIVE, WordCategory.OBJECTIVE, WordCategory.OBJECTIVE, sameWordSource);
         final Sentence sentence = sentenceGenerator.generate();
 

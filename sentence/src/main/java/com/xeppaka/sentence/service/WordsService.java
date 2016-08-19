@@ -1,9 +1,10 @@
 package com.xeppaka.sentence.service;
 
 import com.xeppaka.sentence.domain.word.CategorizedWord;
-import com.xeppaka.sentence.persistence.WordsRepository;
 import com.xeppaka.sentence.domain.word.Word;
 import com.xeppaka.sentence.domain.word.Word.WordCategory;
+import com.xeppaka.sentence.persistence.WordsRepository;
+import com.xeppaka.sentence.service.exceptions.WordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

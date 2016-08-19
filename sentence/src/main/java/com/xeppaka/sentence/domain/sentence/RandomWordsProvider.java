@@ -6,6 +6,6 @@ import com.xeppaka.sentence.domain.word.Word.WordCategory;
 /**
  *
  */
-public interface RandomWordsSource {
+public interface RandomWordsProvider {
     Word getRandomWordForCategory(WordCategory wordCategory);
 }

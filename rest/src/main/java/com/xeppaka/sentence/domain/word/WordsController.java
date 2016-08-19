@@ -1,6 +1,7 @@
 package com.xeppaka.sentence.domain.word;
 
-import com.xeppaka.sentence.service.WordNotFoundException;
+import com.xeppaka.sentence.domain.word.Word.WordCategory;
+import com.xeppaka.sentence.service.exceptions.WordNotFoundException;
 import com.xeppaka.sentence.service.WordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +18,6 @@ import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
 
 /**
  *
@@ -41,7 +41,7 @@ public class WordsController {
         wordDto.getWordCategories().toArray(categories);
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(new URI(MessageFormat.format("/words/{0}", word)));
+        headers.setLocation(new URI(MessageFormat.format("words/{0}", word)));
 
         return new ResponseEntity<>(new WordDto(wordsService.saveWord(word, categories)), headers, HttpStatus.CREATED);
     }

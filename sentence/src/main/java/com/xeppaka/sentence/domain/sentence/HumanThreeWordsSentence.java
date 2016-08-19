@@ -6,8 +6,8 @@ import com.xeppaka.sentence.domain.word.Word.WordCategory;
 /**
  *
  */
-public class HumanSentence extends ThreeWordsSentence {
-    public HumanSentence(Word firstWord, Word secondWord, Word thirdWord) {
+public class HumanThreeWordsSentence extends ThreeWordsSentence {
+    public HumanThreeWordsSentence(Word firstWord, Word secondWord, Word thirdWord) {
         super(firstWord, secondWord, thirdWord);
 
         if (!firstWord.getCategories().contains(WordCategory.NOUN)) {
@@ -24,7 +24,7 @@ public class HumanSentence extends ThreeWordsSentence {
     }
 
     @Override
-    public YodaSentence toYodaSentence() {
-        return new YodaSentence(getWord(2), getWord(0), getWord(1));
+    public YodaThreeWordsSentence toYodaSentence() {
+        return new YodaThreeWordsSentence(getWord(2), getWord(0), getWord(1));
     }
 }

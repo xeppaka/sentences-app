@@ -43,7 +43,7 @@ public class ThreeWordsSentence extends BaseSentence implements Sentence {
 
     @Override
     public Sentence toYodaSentence() {
-        throw new UnsupportedOperationException("Converting general ThreeWordsSentence to YodaSentence is not supported.");
+        throw new UnsupportedOperationException("Converting general ThreeWordsSentence to YodaThreeWordsSentence is not supported.");
     }
 
     @Override

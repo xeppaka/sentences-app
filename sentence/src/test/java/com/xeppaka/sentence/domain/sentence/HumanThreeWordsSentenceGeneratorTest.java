@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.domain.sentence;
 
+import com.xeppaka.sentence.domain.sentence.exceptions.NotEnoughWordsException;
 import com.xeppaka.sentence.domain.word.CategorizedWord;
 import com.xeppaka.sentence.domain.word.Word;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +10,8 @@ import org.junit.Test;
 /**
  *
  */
-public class HumanSentenceGeneratorTest {
-    private RandomWordsSource sameWordSource;
+public class HumanThreeWordsSentenceGeneratorTest {
+    private RandomWordsProvider sameWordSource;
 
     @Before
     public void setUp() {
@@ -24,7 +24,7 @@ public class HumanSentenceGeneratorTest {
     }
 
     @Test
-    public void testSentenceGeneratedWithProvidedCategory() {
+    public void testSentenceGeneratedWithProvidedCategory() throws NotEnoughWordsException {
         final SentenceGenerator sentenceGenerator = new HumanSentenceGenerator(sameWordSource);
         final Sentence sentence = sentenceGenerator.generate();
 

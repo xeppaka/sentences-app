@@ -1,4 +1,4 @@
-package com.xeppaka.sentence.service;
+package com.xeppaka.sentence.service.exceptions;
 
 import java.text.MessageFormat;
 import java.util.ResourceBundle;

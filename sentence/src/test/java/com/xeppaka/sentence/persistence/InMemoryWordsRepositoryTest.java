@@ -7,7 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,18 +23,18 @@ public class InMemoryWordsRepositoryTest {
     public void setUp() {
         wordsRepository = new InMemoryWordsRepository();
         words = new Word[]{
-                new CategorizedWord("table", WordCategory.NOUN),
+                new CategorizedWord("table", WordCategory.NOUN, WordCategory.OBJECTIVE),
                 new CategorizedWord("green", WordCategory.OBJECTIVE),
-                new CategorizedWord("stay", WordCategory.VERB),
-                new CategorizedWord("lay", WordCategory.VERB),
+                new CategorizedWord("stay", WordCategory.VERB, WordCategory.NOUN, WordCategory.OBJECTIVE),
+                new CategorizedWord("lay", WordCategory.VERB, WordCategory.OBJECTIVE),
                 new CategorizedWord("write", WordCategory.VERB),
-                new CategorizedWord("hear", WordCategory.VERB),
+                new CategorizedWord("hear", WordCategory.VERB, WordCategory.OBJECTIVE),
                 new CategorizedWord("ugly", WordCategory.OBJECTIVE),
                 new CategorizedWord("pretty", WordCategory.OBJECTIVE),
-                new CategorizedWord("high", WordCategory.OBJECTIVE),
-                new CategorizedWord("phone", WordCategory.NOUN),
-                new CategorizedWord("monitor", WordCategory.NOUN),
-                new CategorizedWord("bus", WordCategory.NOUN),
+                new CategorizedWord("high", WordCategory.OBJECTIVE, WordCategory.VERB, WordCategory.NOUN),
+                new CategorizedWord("phone", WordCategory.NOUN, WordCategory.VERB),
+                new CategorizedWord("monitor", WordCategory.NOUN, WordCategory.VERB),
+                new CategorizedWord("bus", WordCategory.NOUN, WordCategory.VERB, WordCategory.OBJECTIVE),
                 new CategorizedWord("tiger", WordCategory.NOUN)
         };
     }
@@ -168,7 +170,7 @@ public class InMemoryWordsRepositoryTest {
     }
 
     @Test
-    public void testDeleteWordByValueRemovesEneityFromRepository() {
+    public void testDeleteWordByValueRemovesEntityFromRepository() {
         final Word savedWord1 = wordsRepository.save(words[0]);
         final Word savedWord2 = wordsRepository.save(words[1]);
         final Word savedWord3 = wordsRepository.save(words[2]);
@@ -199,6 +201,78 @@ public class InMemoryWordsRepositoryTest {
 
         for (Word savedWord : savedWords) {
             Assert.assertNull(wordsRepository.findWord(savedWord.getChars()));
+        }
+    }
+
+    @Test
+    public void testFindRandomWordsReturnNullsForEmptyRepository() {
+        for (WordCategory wordCategory : WordCategory.values()) {
+            Assert.assertNull(wordsRepository.findRandomWordForCategory(wordCategory));
+        }
+    }
+
+    @Test
+    public void testFindRandomWordsReturnWordAtLeastOnes() {
+        wordsRepository.save(Arrays.asList(words));
+        final int N = 300;
+        final List<Word> randomResult = new ArrayList<>(N);
+
+        for (int i = 0; i < N; ++i) {
+            for (WordCategory wordCategory : WordCategory.values()) {
+                randomResult.add(wordsRepository.findRandomWordForCategory(wordCategory));
+            }
+        }
+
+        for (Word word : words) {
+            Assert.assertTrue(randomResult.contains(word));
+        }
+    }
+
+    @Test
+    public void testFindRandomWordsNotReturningDeletedWord() {
+        wordsRepository.save(Arrays.asList(words));
+        final int N = 300;
+        final List<Word> randomResults = new ArrayList<>(N);
+
+        for (int i = 0; i < N; ++i) {
+            for (WordCategory wordCategory : WordCategory.values()) {
+                randomResults.add(wordsRepository.findRandomWordForCategory(wordCategory));
+            }
+        }
+
+        Assert.assertTrue(randomResults.contains(words[0]));
+        wordsRepository.delete(words[0].getId());
+
+        final List<Word> afterDeleteRandomResults = new ArrayList<>(N);
+
+        for (int i = 0; i < N; ++i) {
+            for (WordCategory wordCategory : WordCategory.values()) {
+                afterDeleteRandomResults.add(wordsRepository.findRandomWordForCategory(wordCategory));
+            }
+        }
+
+        Assert.assertFalse(afterDeleteRandomResults.contains(words[0]));
+    }
+
+    @Test
+    public void testFindRandomWordReturnsNullIfAllWordsAreDeleted() {
+        wordsRepository.save(Arrays.asList(words));
+
+        for (Word word : words) {
+            wordsRepository.delete(word.getId());
+        }
+
+        for (WordCategory wordCategory : WordCategory.values()) {
+            Assert.assertNull(wordsRepository.findRandomWordForCategory(wordCategory));
+        }
+    }
+
+    @Test
+    public void testFindRandomWordWithOnlyOneWordInRepository() {
+        wordsRepository.save(words[0]);
+
+        for (WordCategory wordCategory : words[0].getCategories()) {
+            Assert.assertEquals(words[0], wordsRepository.findRandomWordForCategory(wordCategory));
         }
     }
 }

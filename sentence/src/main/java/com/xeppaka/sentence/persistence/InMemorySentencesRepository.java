@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -18,93 +21,149 @@ public class InMemorySentencesRepository extends AssertionConcern implements Sen
     private static final AtomicLong nextId = new AtomicLong();
 
     private final Map<Long, Sentence> sentencesById = new HashMap<>();
+    private final ReadWriteLock sync = new ReentrantReadWriteLock();
 
     @Override
-    public synchronized <S extends Sentence> S save(S sentence) {
+    public <S extends Sentence> S save(S sentence) {
         assertArgumentNotNull(sentence, "entity must not be null.");
 
         if (!sentence.hasId()) {
             sentence.setId(nextId.getAndIncrement());
         }
 
-        sentencesById.put(sentence.getId(), sentence);
-        return sentence;
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            sentencesById.put(sentence.getId(), sentence);
+            return sentence;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized <S extends Sentence> Iterable<S> save(Iterable<S> sentences) {
+    public <S extends Sentence> Iterable<S> save(Iterable<S> sentences) {
         assertArgumentNotNull(sentences, "sentences must not be null.");
 
-        final List<S> result = new ArrayList<>();
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            final List<S> result = new ArrayList<>();
 
-        for (S sentence : sentences) {
-            result.add(save(sentence));
+            for (S sentence : sentences) {
+                result.add(save(sentence));
+            }
+
+            return result;
+        } finally {
+            writeLock.unlock();
         }
-
-        return result;
     }
 
     @Override
-    public synchronized List<Sentence> findAll() {
-        return new ArrayList<>(sentencesById.values());
+    public List<Sentence> findAll() {
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return new ArrayList<>(sentencesById.values());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized Sentence findOne(Long id) {
+    public Sentence findOne(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        return sentencesById.get(id);
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return sentencesById.get(id);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean exists(Long id) {
+    public boolean exists(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        return sentencesById.containsKey(id);
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return sentencesById.containsKey(id);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized Iterable<Sentence> findAll(Iterable<Long> ids) {
+    public Iterable<Sentence> findAll(Iterable<Long> ids) {
         assertArgumentNotNull(ids, "ids must not be null.");
 
         final List<Sentence> result = new ArrayList<>();
 
-        Sentence sentence;
-        for (Long id : ids) {
-            sentence = findOne(id);
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
 
-            if (sentence != null) {
-                result.add(sentence);
+            Sentence sentence;
+            for (Long id : ids) {
+                sentence = findOne(id);
+
+                if (sentence != null) {
+                    result.add(sentence);
+                }
             }
+
+            return result;
+        } finally {
+            readLock.unlock();
         }
-
-        return result;
     }
 
     @Override
-    public synchronized long count() {
-        return sentencesById.size();
+    public long count() {
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return sentencesById.size();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public void delete(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        sentencesById.remove(id);
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            sentencesById.remove(id);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void delete(Sentence sentence) {
+    public void delete(Sentence sentence) {
         throw new UnsupportedOperationException("Delete by entity value is not supported.");
     }
 
     @Override
-    public synchronized void delete(Iterable<? extends Sentence> sentences) {
+    public void delete(Iterable<? extends Sentence> sentences) {
         throw new UnsupportedOperationException("Delete by entity value is not supported.");
     }
 
     @Override
-    public synchronized void deleteAll() {
-        sentencesById.clear();
+    public void deleteAll() {
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            sentencesById.clear();
+        } finally {
+            writeLock.unlock();
+        }
     }
 }

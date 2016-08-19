@@ -61,4 +61,25 @@ public class CategorizedWord extends BaseEntity implements Word {
 
         getCategories().remove(category);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        CategorizedWord that = (CategorizedWord) o;
+
+        if (!chars.equals(that.chars)) return false;
+        return categories.equals(that.categories);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + chars.hashCode();
+        result = 31 * result + categories.hashCode();
+        return result;
+    }
 }

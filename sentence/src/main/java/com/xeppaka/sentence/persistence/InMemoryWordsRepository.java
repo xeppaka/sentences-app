@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -21,128 +25,283 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
     private final Map<Long, Word> wordsById = new HashMap<>();
     // helper for quick search over word value
     private final Map<String, Long> idsByChars = new HashMap<>();
+    // helper for quick getting random word id for category. This is bi-directional map splitted into 2 maps.
+    private final List<Map<Long, Long>> idxToIdMapsForCategory;
+    private final List<Map<Long, Long>> idToIdxMapsForCategory;
 
-    @Override
-    public synchronized <S extends Word> S save(S word) {
-        assertArgumentNotNull(word, "word must not be null.");
+    private final ReadWriteLock sync = new ReentrantReadWriteLock();
+    private final Random random = new Random(System.currentTimeMillis());
 
-        final String chars = word.getChars().toLowerCase();
-        Long idInDb = idsByChars.get(chars);
-        if (idInDb == null) {
-            idInDb = nextId.getAndIncrement();
+    {
+        final int categoriesCount = WordCategory.values().length;
+        idxToIdMapsForCategory = new ArrayList<>(categoriesCount);
+        for (int i = 0; i < categoriesCount; ++i) {
+            idxToIdMapsForCategory.add(new HashMap<>());
         }
 
-        word.setId(idInDb);
-        idsByChars.put(chars, idInDb);
-        wordsById.put(idInDb, word);
+        idToIdxMapsForCategory = new ArrayList<>(categoriesCount);
+        for (int i = 0; i < categoriesCount; ++i) {
+            idToIdxMapsForCategory.add(new HashMap<>());
+        }
+    }
+
+    @Override
+    public <S extends Word> S save(S word) {
+        assertArgumentNotNull(word, "word must not be null.");
+
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+
+            final String chars = word.getChars().toLowerCase();
+            Long idInDb = idsByChars.get(chars);
+            if (idInDb == null) {
+                idInDb = nextId.getAndIncrement();
+            }
+
+            word.setId(idInDb);
+            idsByChars.put(chars, idInDb);
+            wordsById.put(idInDb, word);
+
+            for (WordCategory wordCategory : word.getCategories()) {
+                final Map<Long, Long> idxToIdMap = getIdxToIdMapForCategory(wordCategory);
+                final Map<Long, Long> idToIdxMap = getIdToIdxMapForCategory(wordCategory);
+
+                Long nextIdx = (long)idxToIdMap.size();
+                idxToIdMap.put(nextIdx, idInDb);
+                idToIdxMap.put(idInDb, nextIdx);
+            }
+        } finally {
+            writeLock.unlock();
+        }
 
         return word;
     }
 
     @Override
-    public synchronized <S extends Word> List<S> save(Iterable<S> words) {
+    public <S extends Word> List<S> save(Iterable<S> words) {
         assertArgumentNotNull(words, "words must not be null.");
 
-        final List<S> result = new ArrayList<>();
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            final List<S> result = new ArrayList<>();
 
-        for (S word : words) {
-            result.add(save(word));
+            for (S word : words) {
+                result.add(save(word));
+            }
+
+            return result;
+        } finally {
+            writeLock.unlock();
         }
-
-        return result;
     }
 
     @Override
-    public synchronized Word findOne(Long id) {
+    public Word findOne(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        return wordsById.get(id);
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return wordsById.get(id);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized Word findWord(String chars) {
+    public Word findWord(String chars) {
         assertArgumentNotEmpty(chars, "chars must not be null or empty.");
 
-        final Long id = idsByChars.get(chars.toLowerCase());
-        if (id != null) {
-            return wordsById.get(id);
-        }
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            final Long id = idsByChars.get(chars.toLowerCase());
+            if (id != null) {
+                return wordsById.get(id);
+            }
 
-        return null;
+            return null;
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
     public Word findRandomWordForCategory(WordCategory wordCategory) {
-        return null;
+        assertArgumentNotNull(wordCategory, "wordCategory must not be null.");
+
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            final Map<Long, Long> idxToIdMap = getIdxToIdMapForCategory(wordCategory);
+
+            if (!idxToIdMap.isEmpty()) {
+                final Long index = (long) random.nextInt(idxToIdMap.size());
+                return wordsById.get(idxToIdMap.get(index));
+            }
+
+            return null;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private Map<Long, Long> getIdxToIdMapForCategory(WordCategory wordCategory) {
+        return idxToIdMapsForCategory.get(wordCategory.ordinal());
+    }
+
+    private Map<Long, Long> getIdToIdxMapForCategory(WordCategory wordCategory) {
+        return idToIdxMapsForCategory.get(wordCategory.ordinal());
     }
 
     @Override
-    public synchronized boolean exists(Long id) {
+    public boolean exists(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        return wordsById.containsKey(id);
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return wordsById.containsKey(id);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized List<Word> findAll() {
-        return new ArrayList<>(wordsById.values());
+    public List<Word> findAll() {
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return new ArrayList<>(wordsById.values());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized List<Word> findAll(Iterable<Long> ids) {
+    public List<Word> findAll(Iterable<Long> ids) {
         assertArgumentNotNull(ids, "ids must not be null.");
 
-        final List<Word> result = new ArrayList<>();
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            final List<Word> result = new ArrayList<>();
 
-        Word word;
-        for (Long id : ids) {
-            word = findOne(id);
+            Word word;
+            for (Long id : ids) {
+                word = findOne(id);
 
-            if (word != null) {
-                result.add(word);
+                if (word != null) {
+                    result.add(word);
+                }
             }
+
+            return result;
+        } finally {
+            readLock.unlock();
         }
-
-        return result;
     }
 
     @Override
-    public synchronized long count() {
-        return wordsById.size();
+    public long count() {
+        final Lock readLock = sync.readLock();
+        try {
+            readLock.lock();
+            return wordsById.size();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public void delete(Long id) {
         assertArgumentNotNull(id, "id must not be null.");
 
-        final Word deleteWord = wordsById.remove(id);
-        if (deleteWord != null) {
-            idsByChars.remove(deleteWord.getChars());
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            final Word deleteWord = wordsById.remove(id);
+            if (deleteWord != null) {
+                idsByChars.remove(deleteWord.getChars());
+
+                for (WordCategory wordCategory : deleteWord.getCategories()) {
+                    final Map<Long, Long> idxToIdMap = getIdxToIdMapForCategory(wordCategory);
+                    final Map<Long, Long> idToIdxMap = getIdToIdxMapForCategory(wordCategory);
+
+                    final Long idx = idToIdxMap.remove(id);
+                    if (idx != null) {
+                        idxToIdMap.remove(idx);
+                        fillIndexWithLastValue(idx, idxToIdMap, idToIdxMap);
+                    }
+                }
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
+    private void fillIndexWithLastValue(Long idx, Map<Long, Long> idxToIdMap, Map<Long, Long> idToIdxMap) {
+        if (idxToIdMap.isEmpty() || idx == idxToIdMap.size()) {
+            return;
+        }
+
+        final Long lastId = idxToIdMap.get((long)idxToIdMap.size());
+        idxToIdMap.put(idx, lastId);
+        idToIdxMap.put(lastId, idx);
+    }
+
     @Override
-    public synchronized void delete(Word word) {
+    public void delete(Word word) {
         assertArgumentNotNull(word, "word must not be null.");
 
-        final Long wordId = idsByChars.get(word.getChars());
-        if (wordId != null) {
-            delete(wordId);
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+
+            final Long wordId = idsByChars.get(word.getChars());
+            if (wordId != null) {
+                delete(wordId);
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
     @Override
-    public synchronized void delete(Iterable<? extends Word> words) {
+    public void delete(Iterable<? extends Word> words) {
         assertArgumentNotNull(words, "word must not be null.");
 
-        for (Word word : words) {
-            delete(word);
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+
+            for (Word word : words) {
+                delete(word);
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
     @Override
-    public synchronized void deleteAll() {
-        wordsById.clear();
-        idsByChars.clear();
+    public void deleteAll() {
+        final Lock writeLock = sync.writeLock();
+        try {
+            writeLock.lock();
+            wordsById.clear();
+            idsByChars.clear();
+
+            for (Map<Long, Long> idxToIdMap : idxToIdMapsForCategory) {
+                idxToIdMap.clear();
+            }
+
+            for (Map<Long, Long> idToIdxMap : idToIdxMapsForCategory) {
+                idToIdxMap.clear();
+            }
+        } finally {
+            writeLock.unlock();
+        }
     }
 }

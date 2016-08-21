@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.persistence;
 
-import com.xeppaka.sentence.domain.word.CategorizedWord;
-import com.xeppaka.sentence.domain.word.Word;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
+import com.xeppaka.sentence.domain.words.CategorizedWord;
+import com.xeppaka.sentence.domain.words.Word;
+import com.xeppaka.sentence.domain.words.Word.WordCategory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,18 +23,18 @@ public class InMemoryWordsRepositoryTest {
     public void setUp() {
         wordsRepository = new InMemoryWordsRepository();
         words = new Word[]{
-                new CategorizedWord("table", WordCategory.NOUN, WordCategory.OBJECTIVE),
-                new CategorizedWord("green", WordCategory.OBJECTIVE),
-                new CategorizedWord("stay", WordCategory.VERB, WordCategory.NOUN, WordCategory.OBJECTIVE),
-                new CategorizedWord("lay", WordCategory.VERB, WordCategory.OBJECTIVE),
+                new CategorizedWord("table", WordCategory.NOUN, WordCategory.ADJECTIVE),
+                new CategorizedWord("green", WordCategory.ADJECTIVE),
+                new CategorizedWord("stay", WordCategory.VERB, WordCategory.NOUN, WordCategory.ADJECTIVE),
+                new CategorizedWord("lay", WordCategory.VERB, WordCategory.ADJECTIVE),
                 new CategorizedWord("write", WordCategory.VERB),
-                new CategorizedWord("hear", WordCategory.VERB, WordCategory.OBJECTIVE),
-                new CategorizedWord("ugly", WordCategory.OBJECTIVE),
-                new CategorizedWord("pretty", WordCategory.OBJECTIVE),
-                new CategorizedWord("high", WordCategory.OBJECTIVE, WordCategory.VERB, WordCategory.NOUN),
+                new CategorizedWord("hear", WordCategory.VERB, WordCategory.ADJECTIVE),
+                new CategorizedWord("ugly", WordCategory.ADJECTIVE),
+                new CategorizedWord("pretty", WordCategory.ADJECTIVE),
+                new CategorizedWord("high", WordCategory.ADJECTIVE, WordCategory.VERB, WordCategory.NOUN),
                 new CategorizedWord("phone", WordCategory.NOUN, WordCategory.VERB),
                 new CategorizedWord("monitor", WordCategory.NOUN, WordCategory.VERB),
-                new CategorizedWord("bus", WordCategory.NOUN, WordCategory.VERB, WordCategory.OBJECTIVE),
+                new CategorizedWord("bus", WordCategory.NOUN, WordCategory.VERB, WordCategory.ADJECTIVE),
                 new CategorizedWord("tiger", WordCategory.NOUN)
         };
     }
@@ -103,14 +103,14 @@ public class InMemoryWordsRepositoryTest {
     public void testWordIsUpdated() {
         final Word word = new CategorizedWord("Eubicor", WordCategory.VERB);
         final Word wordForUpdating = new CategorizedWord(word);
-        wordForUpdating.addCategory(WordCategory.OBJECTIVE);
+        wordForUpdating.addCategory(WordCategory.ADJECTIVE);
 
         wordsRepository.save(word);
         Assert.assertTrue(word.hasId());
         wordsRepository.save(wordForUpdating);
         final Word foundWord = wordsRepository.findWord("eubicor");
         Assert.assertEquals(2, foundWord.categoriesCount());
-        Assert.assertTrue(foundWord.getCategories().containsAll(Arrays.asList(WordCategory.VERB, WordCategory.OBJECTIVE)));
+        Assert.assertTrue(foundWord.getCategories().containsAll(Arrays.asList(WordCategory.VERB, WordCategory.ADJECTIVE)));
     }
 
     @Test

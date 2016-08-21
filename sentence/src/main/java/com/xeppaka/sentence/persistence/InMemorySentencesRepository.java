@@ -1,7 +1,7 @@
 package com.xeppaka.sentence.persistence;
 
 import com.xeppaka.sentence.domain.AssertionConcern;
-import com.xeppaka.sentence.domain.sentence.Sentence;
+import com.xeppaka.sentence.domain.sentences.Sentence;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

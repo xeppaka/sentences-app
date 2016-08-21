@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  *
  */
-@SpringBootApplication /* (scanBasePackages = "com.xeppaka.sentence") */
+@SpringBootApplication
 public class SentenceApplication {
     public static void main(String[] args) {
         SpringApplication.run(SentenceApplication.class, args);

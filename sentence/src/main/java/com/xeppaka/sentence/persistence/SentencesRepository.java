@@ -1,6 +1,6 @@
 package com.xeppaka.sentence.persistence;
 
-import com.xeppaka.sentence.domain.sentence.Sentence;
+import com.xeppaka.sentence.domain.sentences.Sentence;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

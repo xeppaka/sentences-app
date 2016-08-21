@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.service;
 
-import com.xeppaka.sentence.domain.sentence.HumanSentenceGenerator;
-import com.xeppaka.sentence.domain.sentence.Sentence;
-import com.xeppaka.sentence.domain.sentence.exceptions.NotEnoughWordsException;
+import com.xeppaka.sentence.domain.sentences.HumanSentenceGenerator;
+import com.xeppaka.sentence.domain.sentences.Sentence;
+import com.xeppaka.sentence.domain.sentences.exceptions.NotEnoughWordsException;
 import com.xeppaka.sentence.persistence.SentencesRepository;
 import com.xeppaka.sentence.persistence.WordsRepository;
 import com.xeppaka.sentence.service.exceptions.SentenceNotFoundException;
@@ -27,26 +27,43 @@ public class SentencesService {
         humanSentenceGenerator = new HumanSentenceGenerator((category) -> wordsRepository.findRandomWordForCategory(category));
     }
 
-    public List<Sentence> findAllSentences() {
-        return sentencesRepository.findAll();
+    public List<Sentence> findAllSentencesToShow() {
+        final List<Sentence> sentences = sentencesRepository.findAll();
+
+        for (Sentence sentence : sentences) {
+            sentence.increaseViewCount();
+        }
+
+        return sentences;
     }
 
-    public Sentence generateHumanSentence() throws NotEnoughWordsException {
+    public Sentence generateHumanSentenceToShow() throws NotEnoughWordsException {
         final Sentence sentence = humanSentenceGenerator.generate();
+        sentence.increaseViewCount();
         return sentencesRepository.save(sentence);
     }
 
-    public Sentence findSentence(long sentenceId) throws SentenceNotFoundException {
+    public Sentence findSentence(long sentenceId) {
+        return sentencesRepository.findOne(sentenceId);
+    }
+
+    public Sentence findSentenceToShow(long sentenceId) {
         final Sentence sentence = sentencesRepository.findOne(sentenceId);
 
-        if (sentence == null) {
-            throw new SentenceNotFoundException(sentenceId);
+        if (sentence != null) {
+            sentence.increaseViewCount();
         }
 
         return sentence;
     }
 
-    public Sentence getYodaSentence(long humanSentenceId) {
-        return sentencesRepository.findOne(humanSentenceId).toYodaSentence();
+    public Sentence getYodaSentence(long sentenceId) throws SentenceNotFoundException {
+        final Sentence humanSentence = findSentence(sentenceId);
+
+        if (humanSentence == null) {
+            throw new SentenceNotFoundException(sentenceId);
+        }
+
+        return humanSentence.toYodaSentence();
     }
 }

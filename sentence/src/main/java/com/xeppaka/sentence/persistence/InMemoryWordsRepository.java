@@ -1,8 +1,8 @@
 package com.xeppaka.sentence.persistence;
 
 import com.xeppaka.sentence.domain.AssertionConcern;
-import com.xeppaka.sentence.domain.word.Word;
-import com.xeppaka.sentence.domain.word.Word.WordCategory;
+import com.xeppaka.sentence.domain.words.Word;
+import com.xeppaka.sentence.domain.words.Word.WordCategory;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
     private static final AtomicLong nextId = new AtomicLong();
 
     private final Map<Long, Word> wordsById = new HashMap<>();
-    // helper for quick search over word value
+    // helper for quick search over words value
     private final Map<String, Long> idsByChars = new HashMap<>();
-    // helper for quick getting random word id for category. This is bi-directional map splitted into 2 maps.
+    // helper for quick getting random words id for category. This is bi-directional map splitted into 2 maps.
     private final List<Map<Long, Long>> idxToIdMapsForCategory;
     private final List<Map<Long, Long>> idToIdxMapsForCategory;
 
@@ -47,7 +47,7 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
 
     @Override
     public <S extends Word> S save(S word) {
-        assertArgumentNotNull(word, "word must not be null.");
+        assertArgumentNotNull(word, "words must not be null.");
 
         final Lock writeLock = sync.writeLock();
         try {
@@ -254,7 +254,7 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
 
     @Override
     public void delete(Word word) {
-        assertArgumentNotNull(word, "word must not be null.");
+        assertArgumentNotNull(word, "words must not be null.");
 
         final Lock writeLock = sync.writeLock();
         try {
@@ -271,7 +271,7 @@ public class InMemoryWordsRepository extends AssertionConcern implements WordsRe
 
     @Override
     public void delete(Iterable<? extends Word> words) {
-        assertArgumentNotNull(words, "word must not be null.");
+        assertArgumentNotNull(words, "words must not be null.");
 
         final Lock writeLock = sync.writeLock();
         try {

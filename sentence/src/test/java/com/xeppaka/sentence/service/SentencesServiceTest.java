@@ -85,6 +85,6 @@ public class SentencesServiceTest {
     @Test(expected = SentenceNotFoundException.class)
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void testYodaThrowsExceptionIfSentenceIdIsUnknown() throws SentenceNotFoundException {
-        sentencesService.getYodaSentence(0l);
+        sentencesService.getYodaSentence(0L);
     }
 }

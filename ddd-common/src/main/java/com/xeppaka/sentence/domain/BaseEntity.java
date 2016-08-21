@@ -1,7 +1,8 @@
 package com.xeppaka.sentence.domain;
 
 /**
- *
+ * Class represents base for all Entity classes in the system.
+ * Implements basic manipulation methods with Entity id.
  */
 public abstract class BaseEntity extends AssertionConcern implements Entity {
     private long id = ID_UNDEFINED;

@@ -8,12 +8,20 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Default implementation of {@link Word} interface.
+ * Implementation of {@link Word} interface with ability to set word categories (NOUN, VERB, ADJECTIVE).
  */
 public class CategorizedWord extends BaseEntity implements Word {
     private String chars;
     private Set<WordCategory> categories = Collections.synchronizedSet(EnumSet.noneOf(WordCategory.class));
 
+    /**
+     * Default word constructor.
+     *
+     * @param chars      is the word itself.
+     * @param categories is the word categories. There should be at least 1 category, otherwise
+     *                   {@link IllegalArgumentException} exception is thrown.
+     *
+     */
     public CategorizedWord(String chars, WordCategory... categories) {
         assertArgumentNotEmpty(chars, "chars must not be null or empty.");
         assertArgumentNotEmpty(categories, "category must not be null or empty.");
@@ -22,6 +30,11 @@ public class CategorizedWord extends BaseEntity implements Word {
         this.categories.addAll(Arrays.asList(categories));
     }
 
+    /**
+     * Copy constructor.
+     *
+     * @param word is the word from which values are copied.
+     */
     public CategorizedWord(Word word) {
         assertArgumentNotNull(word, "words must not be null or empty.");
 

@@ -5,7 +5,7 @@ import com.xeppaka.sentence.domain.BaseEntity;
 import java.time.LocalDateTime;
 
 /**
- *
+ * Base class for sentences. Tracks number of views and date and time when it was generated.
  */
 public abstract class BaseSentence extends BaseEntity implements Sentence {
     private LocalDateTime generatedOn;
@@ -15,14 +15,17 @@ public abstract class BaseSentence extends BaseEntity implements Sentence {
         generatedOn = LocalDateTime.now();
     }
 
+    @Override
     public LocalDateTime getGeneratedOn() {
         return generatedOn;
     }
 
+    @Override
     public int getViewCount() {
         return viewCount;
     }
 
+    @Override
     public int increaseViewCount() {
         return ++viewCount;
     }

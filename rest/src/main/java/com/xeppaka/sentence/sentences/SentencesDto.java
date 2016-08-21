@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import java.util.List;
 
 /**
- *
+ * Class represents DTO for list of sentences.
  */
 @JsonRootName("sentences")
 public class SentencesDto {

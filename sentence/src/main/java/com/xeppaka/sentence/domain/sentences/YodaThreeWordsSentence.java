@@ -3,7 +3,7 @@ package com.xeppaka.sentence.domain.sentences;
 import com.xeppaka.sentence.domain.words.Word;
 
 /**
- *
+ * Class represents sentence in a Yoda form (NOUN, ADJECTIVE, VERB).
  */
 public class YodaThreeWordsSentence extends ThreeWordsSentence {
     public YodaThreeWordsSentence(Word firstWord, Word secondWord, Word thirdWord) {

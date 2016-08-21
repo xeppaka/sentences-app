@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Spring configuration of REST api.
  */
 @Configuration
 public class RestConfiguration {

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Class represents spring configuration of sentence module.
  */
 @Configuration
 public class SentenceConfiguration {

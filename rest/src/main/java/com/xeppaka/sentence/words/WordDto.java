@@ -9,7 +9,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- *
+ * Class represents DTO for Word.
  */
 @JsonRootName("word")
 public class WordDto {

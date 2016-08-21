@@ -4,7 +4,7 @@ import com.xeppaka.sentence.domain.words.Word;
 import com.xeppaka.sentence.domain.words.Word.WordCategory;
 
 /**
- *
+ * Class represents sentence in a human form (NOUN, VERB, ADJECTIVE).
  */
 public class HumanThreeWordsSentence extends ThreeWordsSentence {
     public HumanThreeWordsSentence(Word firstWord, Word secondWord, Word thirdWord) {

@@ -1,7 +1,7 @@
 package com.xeppaka.sentence.domain;
 
 /**
- *
+ * Class aggregates different types of argument checking.
  */
 public class AssertionConcern {
     protected AssertionConcern() {

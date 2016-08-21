@@ -4,7 +4,7 @@ import com.xeppaka.sentence.domain.sentences.exceptions.NotEnoughWordsException;
 import com.xeppaka.sentence.domain.words.Word.WordCategory;
 
 /**
- *
+ * Class represents generator of a sentence in human form (NOUN, VERB, ADJECTIVE).
  */
 public class HumanSentenceGenerator extends ThreeWordsSentenceGenerator {
     public HumanSentenceGenerator(RandomWordsProvider randomWordsProvider) {

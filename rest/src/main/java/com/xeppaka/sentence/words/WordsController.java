@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Class represents REST controller for words.
  */
 @RestController
 @RequestMapping("words")

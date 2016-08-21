@@ -5,7 +5,7 @@ import com.xeppaka.sentence.domain.Entity;
 import java.util.Set;
 
 /**
- * Represents Word contract.
+ * Interface represents Word contract.
  */
 public interface Word extends Entity {
     enum WordCategory {

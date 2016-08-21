@@ -14,9 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.MessageFormat;
-
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -124,19 +121,9 @@ public class TestSentencesApi {
             ResponseEntity<String> yodaFormResponse = restTemplate.getForEntity(String.format("/sentences/%d/yodaTalk", generatedSentence.getBody().getId()), String.class);
             String yodaTalk = yodaFormResponse.getBody();
 
-//            assertThatJson(yodaTalk).node("text").isEqualTo(N);
-//            assertThatJson(jsonSentences.getBody()).node("sentences.sentenceList").isArray();
-//            assertThatJson(jsonSentences.getBody()).node("sentences.sentenceList").matches(everyItem(
-//                    jsonPartMatches("text", anyOf(containsString("Summer"), containsString("Cookie"), containsString("Act"))))
-//            );
-//            assertThatJson(jsonSentences.getBody()).node("sentences.sentenceList").matches(everyItem(
-//                    jsonPartMatches("text", anyOf(startsWith("Cold"), startsWith("Nice"), startsWith("Cookie"))))
-//            );
-//            assertThatJson(jsonSentences.getBody()).node("sentences.sentenceList").matches(everyItem(
-//                    jsonPartMatches("text", anyOf(endsWith("Is"), endsWith("Stay"), endsWith("Run"), endsWith("Act"))))
-//            );
-
-            System.out.println(yodaTalk);
+            assertThatJson(yodaTalk).node("sentence.text").matches(anyOf(containsString("Cold"), containsString("Nice"), containsString("Cookie")));
+            assertThatJson(yodaTalk).node("sentence.text").matches(anyOf(startsWith("Summer"), startsWith("Cookie"), startsWith("Act")));
+            assertThatJson(yodaTalk).node("sentence.text").matches(anyOf(endsWith("Is"), endsWith("Stay"), endsWith("Run"), endsWith("Act")));
         }
     }
 }

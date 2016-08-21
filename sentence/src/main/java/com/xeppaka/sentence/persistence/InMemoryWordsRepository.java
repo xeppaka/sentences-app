@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- *
+ * Class represents in memory repository of words. Methods are tread-safe.
  */
 @Repository
 public class InMemoryWordsRepository extends AssertionConcern implements WordsRepository {

@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Class represents REST controller for sentences.
  */
 @RestController
 @RequestMapping("sentences")
@@ -27,7 +28,7 @@ public class SentencesController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<SentencesDto> findAllSentences() {
         final List<Sentence> sentences = sentencesService.findAllSentencesToShow();
-        return new ResponseEntity<>(new SentencesDto(sentences.stream().map(SentenceDto::new).collect(Collectors.toList())), HttpStatus.OK);
+        return new ResponseEntity<>(new SentencesDto(sentences.stream().map(this::createDtoForSentence).collect(Collectors.toList())), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{sentenceId}")
@@ -38,13 +39,17 @@ public class SentencesController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new SentenceDto(sentence), HttpStatus.OK);
+        return new ResponseEntity<>(createDtoForSentence(sentence), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "generate")
-    public ResponseEntity<SentenceDto> generateHumanSentence() throws NotEnoughWordsException {
-        final Sentence humanSentence = sentencesService.generateHumanSentenceToShow();
-        return new ResponseEntity<>(new SentenceDto(humanSentence), HttpStatus.OK);
+    public ResponseEntity<SentenceDto> generateHumanSentence() {
+        try {
+            final Sentence sentence = sentencesService.generateHumanSentenceToShow();
+            return new ResponseEntity<>(createDtoForSentence(sentence), HttpStatus.OK);
+        } catch (NotEnoughWordsException e) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{sentenceId}/yodaTalk")
@@ -54,5 +59,10 @@ public class SentencesController {
         } catch (SentenceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    private SentenceDto createDtoForSentence(Sentence sentence) {
+        final Set<Long> sameTextIds = sentencesService.findSentencesWithSameText(sentence.getId());
+        return new SentenceDto(sentence, sameTextIds);
     }
 }

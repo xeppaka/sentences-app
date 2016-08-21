@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
- *
+ * Class represents configuration for Jackson serialization library.
  */
 @Configuration
 public class JacksonConfig extends Jackson2ObjectMapperBuilder {

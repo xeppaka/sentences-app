@@ -6,7 +6,7 @@ import com.xeppaka.sentence.domain.words.Word;
 import com.xeppaka.sentence.domain.words.Word.WordCategory;
 
 /**
- *
+ * Class implements sentence generator which generates sentence of three words each with specific category.
  */
 public class ThreeWordsSentenceGenerator extends AssertionConcern implements SentenceGenerator {
     private WordCategory firstCategory;
@@ -14,15 +14,23 @@ public class ThreeWordsSentenceGenerator extends AssertionConcern implements Sen
     private WordCategory thirdCategory;
     private RandomWordsProvider randomWordsProvider;
 
-    public ThreeWordsSentenceGenerator(WordCategory firstCategory, WordCategory secondCategory, WordCategory thirdCategory, RandomWordsProvider randomWordsProvider) {
-        assertArgumentNotNull(firstCategory, "firstCategory must not be null.");
-        assertArgumentNotNull(secondCategory, "secondCategory must not be null.");
-        assertArgumentNotNull(thirdCategory, "thirdCategory must not be null.");
+    /**
+     * Generator constructor.
+     *
+     * @param firstWordCategory is category that should have first word of the generated sentence.
+     * @param secondWordCategory is category that should have second word of the generated sentence.
+     * @param thirdWordCategory is category that should have third word of the generated sentence.
+     * @param randomWordsProvider is random words provided.
+     */
+    public ThreeWordsSentenceGenerator(WordCategory firstWordCategory, WordCategory secondWordCategory, WordCategory thirdWordCategory, RandomWordsProvider randomWordsProvider) {
+        assertArgumentNotNull(firstWordCategory, "firstWordCategory must not be null.");
+        assertArgumentNotNull(secondWordCategory, "secondWordCategory must not be null.");
+        assertArgumentNotNull(thirdWordCategory, "thirdWordCategory must not be null.");
         assertArgumentNotNull(randomWordsProvider, "randomWordsProvider must not be null.");
 
-        this.firstCategory = firstCategory;
-        this.secondCategory = secondCategory;
-        this.thirdCategory = thirdCategory;
+        this.firstCategory = firstWordCategory;
+        this.secondCategory = secondWordCategory;
+        this.thirdCategory = thirdWordCategory;
         this.randomWordsProvider = randomWordsProvider;
     }
 

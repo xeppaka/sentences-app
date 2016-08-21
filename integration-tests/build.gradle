@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':server')
+
+    compile 'junit:junit:4.12'
+    compile 'org.springframework.boot:spring-boot-starter-test:1.4.0.RELEASE'
+    compile 'net.javacrumbs.json-unit:json-unit:1.15.0'
+    compile 'net.javacrumbs.json-unit:json-unit-fluent:1.15.0'
+}
+
+task integrationTests(type: Test, group: 'verification') {
+    testClassesDir project.sourceSets.main.output.classesDir
+}

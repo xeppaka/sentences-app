@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.xeppaka.sentence.domain.sentences.Sentence;
 
 /**
- *
+ * Class represents DTO for Yoda form of sentence.
  */
 @JsonRootName("sentence")
 public class YodaSentenceDto {
     private String text;
-    private int showDisplayCount;
 
     private YodaSentenceDto() { }
 
@@ -23,7 +22,6 @@ public class YodaSentenceDto {
         }
 
         this.text = text;
-        this.showDisplayCount = showDisplayCount;
     }
 
     public YodaSentenceDto(Sentence sentence) {
@@ -32,9 +30,5 @@ public class YodaSentenceDto {
 
     public String getText() {
         return text;
-    }
-
-    public int getShowDisplayCount() {
-        return showDisplayCount;
     }
 }

@@ -5,7 +5,7 @@ import com.xeppaka.sentence.domain.words.Word;
 import java.text.MessageFormat;
 
 /**
- *
+ * Class represents word which contains always three words.
  */
 public class ThreeWordsSentence extends BaseSentence implements Sentence {
     private Word firstWord;

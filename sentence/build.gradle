@@ -13,6 +13,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'org.springframework.data:spring-data-commons:1.12.2.RELEASE'
     compile 'org.springframework:spring-context:4.3.2.RELEASE'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
 
     compile project(':ddd-common')
 

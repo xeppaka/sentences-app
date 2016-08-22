@@ -9,8 +9,8 @@ import java.util.List;
  */
 @JsonRootName("words")
 public class WordsDto {
-    private List<WordDto> wordsList;
-    private int wordsCount;
+    private final List<WordDto> wordsList;
+    private final int wordsCount;
 
     public WordsDto(List<WordDto> wordsList) {
         this.wordsList = wordsList;

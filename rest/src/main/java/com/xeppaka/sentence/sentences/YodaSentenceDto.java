@@ -8,9 +8,11 @@ import com.xeppaka.sentence.domain.sentences.Sentence;
  */
 @JsonRootName("sentence")
 public class YodaSentenceDto {
-    private String text;
+    private final String text;
 
-    private YodaSentenceDto() { }
+    private YodaSentenceDto() {
+        this.text = null;
+    }
 
     public YodaSentenceDto(String text, int showDisplayCount) {
         if (text == null) {

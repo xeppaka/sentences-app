@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.xeppaka.sentence.domain.sentences.Sentence;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -11,13 +12,19 @@ import java.util.Set;
  */
 @JsonRootName("sentence")
 public class SentenceDto {
-    private long id;
-    private String text;
-    private int showDisplayCount;
-    private String generatedOn;
-    private Set<Long> sentencesWithSameText;
+    private final long id;
+    private final String text;
+    private final int showDisplayCount;
+    private final String generatedOn;
+    private final Set<Long> sentencesWithSameText;
 
-    private SentenceDto() { }
+    private SentenceDto() {
+        this.id = -1;
+        text = null;
+        showDisplayCount = 0;
+        generatedOn = LocalDateTime.now().toString();
+        sentencesWithSameText = Collections.emptySet();
+    }
 
     public SentenceDto(long id, String text, int showDisplayCount, LocalDateTime generatedOn, Set<Long> sentencesWithSameText) {
         if (id < 0) {

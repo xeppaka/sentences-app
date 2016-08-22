@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Base class for sentences. Tracks number of views and date and time when it was generated.
  */
 public abstract class BaseSentence extends BaseEntity implements Sentence {
-    private LocalDateTime generatedOn;
+    private final LocalDateTime generatedOn;
     private int viewCount;
 
     public BaseSentence() {

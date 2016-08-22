@@ -11,8 +11,8 @@ import java.util.Set;
  * Implementation of {@link Word} interface with ability to set word categories (NOUN, VERB, ADJECTIVE).
  */
 public class CategorizedWord extends BaseEntity implements Word {
-    private String chars;
-    private Set<WordCategory> categories = Collections.synchronizedSet(EnumSet.noneOf(WordCategory.class));
+    private final String chars;
+    private final Set<WordCategory> categories = Collections.synchronizedSet(EnumSet.noneOf(WordCategory.class));
 
     /**
      * Default word constructor.

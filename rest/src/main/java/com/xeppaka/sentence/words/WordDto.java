@@ -5,6 +5,7 @@ import com.xeppaka.sentence.domain.words.Word;
 import com.xeppaka.sentence.domain.words.Word.WordCategory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -13,10 +14,13 @@ import java.util.Set;
  */
 @JsonRootName("word")
 public class WordDto {
-    private String word;
-    private Set<WordCategory> wordCategories;
+    private final String word;
+    private final Set<WordCategory> wordCategories;
 
-    private WordDto() { }
+    private WordDto() {
+        word = null;
+        wordCategories = Collections.emptySet();
+    }
 
     public WordDto(String word, Collection<WordCategory> wordCategories) {
         validate(word, wordCategories);

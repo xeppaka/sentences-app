@@ -9,8 +9,8 @@ import java.util.List;
  */
 @JsonRootName("sentences")
 public class SentencesDto {
-    private List<SentenceDto> sentenceList;
-    private int sentencesCount;
+    private final List<SentenceDto> sentenceList;
+    private final int sentencesCount;
 
     public SentencesDto(List<SentenceDto> sentenceList) {
         this.sentenceList = sentenceList;

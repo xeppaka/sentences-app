@@ -9,10 +9,10 @@ import com.xeppaka.sentence.domain.words.Word.WordCategory;
  * Class implements sentence generator which generates sentence of three words each with specific category.
  */
 public class ThreeWordsSentenceGenerator extends AssertionConcern implements SentenceGenerator {
-    private WordCategory firstCategory;
-    private WordCategory secondCategory;
-    private WordCategory thirdCategory;
-    private RandomWordsProvider randomWordsProvider;
+    private final WordCategory firstCategory;
+    private final WordCategory secondCategory;
+    private final WordCategory thirdCategory;
+    private final RandomWordsProvider randomWordsProvider;
 
     /**
      * Generator constructor.

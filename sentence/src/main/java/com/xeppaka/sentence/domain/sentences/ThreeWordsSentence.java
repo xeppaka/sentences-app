@@ -8,9 +8,9 @@ import java.text.MessageFormat;
  * Class represents word which contains always three words.
  */
 public class ThreeWordsSentence extends BaseSentence implements Sentence {
-    private Word firstWord;
-    private Word secondWord;
-    private Word thirdWord;
+    private final Word firstWord;
+    private final Word secondWord;
+    private final Word thirdWord;
 
     public ThreeWordsSentence(Word firstWord, Word secondWord, Word thirdWord) {
         assertArgumentNotNull(firstWord, "firstWord must not be null.");
